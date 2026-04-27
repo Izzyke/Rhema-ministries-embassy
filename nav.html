@@ -1,0 +1,17 @@
+<!-- nav.html - shared nav component -->
+<!-- Include via JS: fetch('nav.html').then(r=>r.text()).then(h=>document.getElementById('nav-placeholder').innerHTML=h) -->
+<nav id="main-nav">
+  <div class="nav-logo">Rhema Ministries Embassy</div>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="home.html" data-page="home">Home</a></li>
+    <li><a href="gallery.html" data-page="gallery">Gallery</a></li>
+    <li><a href="resources.html" data-page="resources">Resources</a></li>
+    <li><a href="about.html" data-page="about">About Us</a></li>
+    <li id="admin-nav-item" style="display:none"><a href="admin.html" data-page="admin">Admin</a></li>
+  </ul>
+  <div class="nav-user" id="nav-user">
+    <span id="nav-username"></span>
+    <button class="nav-logout" onclick="logout()">Sign Out</button>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">☰</button>
+</nav>

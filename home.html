@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rhema Ministries Embassy — Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Cinzel:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* HOME-SPECIFIC */
+  .hero {
+    min-height: 100vh;
+    background: var(--dark);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    margin-top: calc(-1 * var(--nav-h));
+    padding-top: calc(6rem + var(--nav-h));
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 60%, rgba(139,26,26,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 20%, rgba(184,150,12,0.06) 0%, transparent 60%);
+  }
+  .hero-ornament { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 80px; background: linear-gradient(to bottom, transparent, var(--gold)); opacity: 0.4; }
+  .hero-logo { width: 180px; height: 180px; object-fit: contain; margin-bottom: 2.5rem; animation: fadeInDown 1s ease both; filter: drop-shadow(0 8px 32px rgba(212,175,55,0.2)); border-radius: 50%; }
+  .hero-eyebrow { font-family: 'Cinzel', serif; font-size: 0.68rem; font-weight: 600; color: var(--gold-light); letter-spacing: 0.35em; text-transform: uppercase; margin-bottom: 1.2rem; animation: fadeInUp 1s 0.2s ease both; position: relative; }
+  .hero-title { font-family: 'Cinzel', serif; font-size: clamp(2.4rem, 6vw, 5rem); font-weight: 700; color: #fff; line-height: 1.1; letter-spacing: 0.04em; margin-bottom: 1.5rem; animation: fadeInUp 1s 0.35s ease both; position: relative; }
+  .hero-title span { color: var(--gold-light); }
+  .hero-verse { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-style: italic; color: rgba(255,255,255,0.55); margin-bottom: 0.5rem; animation: fadeInUp 1s 0.5s ease both; position: relative; }
+  .hero-ref { font-family: 'Cinzel', serif; font-size: 0.72rem; color: var(--gold); letter-spacing: 0.2em; animation: fadeInUp 1s 0.6s ease both; position: relative; }
+  .hero-divider { width: 80px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 2.5rem auto; animation: fadeInUp 1s 0.7s ease both; position: relative; }
+  .hero-cta { display: inline-block; font-family: 'Cinzel', serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dark); background: var(--gold-light); padding: 1rem 2.5rem; text-decoration: none; transition: all 0.3s; animation: fadeInUp 1s 0.85s ease both; position: relative; }
+  .hero-cta:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,0.3); }
+
+  /* ABOUT */
+  .about { background: var(--cream); padding: 7rem 2rem; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+  .about-text p { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; line-height: 1.9; margin-bottom: 1.5rem; }
+  .about-pillars { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .pillar { background: var(--dark); padding: 1.8rem; border-left: 3px solid var(--gold); transition: transform 0.3s; }
+  .pillar:hover { transform: translateY(-4px); }
+  .pillar-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+  .pillar-title { font-family: 'Cinzel', serif; font-size: 0.8rem; font-weight: 700; color: var(--gold-light); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .pillar-text { font-size: 0.82rem; line-height: 1.7; color: rgba(255,255,255,0.55); }
+
+  /* FAITH */
+  .faith { background: var(--dark); position: relative; overflow: hidden; padding: 7rem 2rem; }
+  .faith::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 80% 50%, rgba(139,26,26,0.1) 0%, transparent 70%); }
+  .faith .section-title { color: #fff; }
+  .faith-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+  .faith-card { border: 1px solid rgba(212,175,55,0.15); padding: 2rem; position: relative; transition: border-color 0.3s, transform 0.3s; }
+  .faith-card:hover { border-color: rgba(212,175,55,0.5); transform: translateY(-3px); }
+  .faith-number { font-family: 'Cinzel', serif; font-size: 2.5rem; font-weight: 900; color: rgba(212,175,55,0.12); position: absolute; top: 1rem; right: 1.5rem; line-height: 1; }
+  .faith-card p { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; line-height: 1.8; color: rgba(255,255,255,0.75); }
+  .faith-card .ref { display: inline-block; margin-top: 1rem; font-family: 'Cinzel', serif; font-size: 0.65rem; color: var(--gold); letter-spacing: 0.12em; }
+
+  @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 768px) {
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .about-pillars { grid-template-columns: 1fr; }
+    .faith-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-ornament"></div>
+  <img class="hero-logo" src="logo.jpg" alt="Rhema Ministries Embassy"
+    onerror="this.style.display='none'">
+  <p class="hero-eyebrow">Welcome to</p>
+  <h1 class="hero-title">Rhema Ministries<br><span>Embassy</span></h1>
+  <p class="hero-verse">"Equipping The Saints For The Work Of The Ministry..."</p>
+  <p class="hero-ref">Ephesians 4:12</p>
+  <div class="hero-divider"></div>
+  <a href="#about" class="hero-cta">Discover More</a>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p class="section-label">Our Mission</p>
+        <h2 class="section-title">Equipping Believers<br>for God's Kingdom</h2>
+        <div class="gold-line" style="margin:0 0 2rem"></div>
+        <p>Rhema Ministries Embassy is a ministry devoted to building up the body of Christ through sound biblical teaching, discipleship, and equipping every believer for active service in the work of the Kingdom.</p>
+        <p>We are grounded in the conviction that every saint is called to minister — and it is our joy and purpose to help them discover, develop, and deploy their God-given gifts.</p>
+      </div>
+      <div class="about-pillars reveal">
+        <div class="pillar">
+          <div class="pillar-icon">📖</div>
+          <div class="pillar-title">Sound Teaching</div>
+          <p class="pillar-text">Rooted in the inspired, infallible Word of God as the sole authority for faith and life.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">🔥</div>
+          <div class="pillar-title">Spirit-Led</div>
+          <p class="pillar-text">Empowered by the Holy Spirit to live godly lives and minister with boldness and grace.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">✝️</div>
+          <div class="pillar-title">Christ-Centred</div>
+          <p class="pillar-text">Jesus Christ — His life, death, resurrection, and return — is the heart of everything we do.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon">🤝</div>
+          <div class="pillar-title">Unity in the Body</div>
+          <p class="pillar-text">Celebrating the spiritual unity of all believers as one Body in our Lord Jesus Christ.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATEMENT OF FAITH -->
+<section class="faith" id="faith">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">What We Believe</p>
+      <h2 class="section-title">Statement of Faith</h2>
+      <div class="gold-line" style="margin:1rem 0 2rem"></div>
+    </div>
+    <div class="faith-grid">
+      <div class="faith-card reveal"><div class="faith-number">01</div><p>We believe the Bible to be the inspired, the only infallible, authoritative Word of God.</p><span class="ref">2 Timothy 3:16–17</span></div>
+      <div class="faith-card reveal"><div class="faith-number">02</div><p>We believe there is only one God, eternally existent in three persons: Father, Son and Holy Spirit.</p><span class="ref">Matthew 28:19</span></div>
+      <div class="faith-card reveal"><div class="faith-number">03</div><p>We believe in the deity of Christ, His virgin birth, His sinless life, His miracles, His atoning death, His bodily resurrection, His ascension, and His personal return in power and glory.</p><span class="ref">John 1:1 · Matthew 1:18 · Hebrews 9:27–28</span></div>
+      <div class="faith-card reveal"><div class="faith-number">04</div><p>We believe in the salvation of the lost and that regeneration by the Holy Spirit is absolutely essential.</p><span class="ref">John 3:16 · Titus 3:3–7</span></div>
+      <div class="faith-card reveal"><div class="faith-number">05</div><p>We believe in the present ministry of the Holy Spirit, by whose indwelling the believer is enabled to live a godly life.</p><span class="ref">John 14:15–26 · Ephesians 1:13–14</span></div>
+      <div class="faith-card reveal"><div class="faith-number">06</div><p>We believe in the resurrection of both believers and non-believers — believers unto eternal life, and non-believers unto damnation.</p><span class="ref">Matthew 25:31–46 · 1 Thessalonians 4:13–18</span></div>
+      <div class="faith-card reveal"><div class="faith-number">07</div><p>We believe in the spiritual unity of all believers in our Lord Jesus Christ as the Body of Christ.</p><span class="ref">Philippians 2:1–4 · 1 Corinthians 12:27</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Rhema Ministries Embassy</div>
+  <div class="footer-tag">"Equipping The Saints For The Work Of The Ministry..." — Ephesians 4:12</div>
+  <div class="footer-copy">© 2026 Rhema Ministries Embassy · Nakuru, Kenya · All rights reserved.</div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+  initNav('home');
+  document.addEventListener('DOMContentLoaded', initReveal);
+</script>
+</body>
+</html>

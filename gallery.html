@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — Rhema Ministries Embassy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Cinzel:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .filter-bar {
+    background: #fff;
+    border-bottom: 1px solid rgba(139,26,26,0.1);
+    padding: 1rem 0;
+    position: sticky;
+    top: var(--nav-h);
+    z-index: 50;
+  }
+  .filter-inner {
+    max-width: 1100px; margin: 0 auto; padding: 0 2rem;
+    display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+  }
+  .filter-btn {
+    background: none;
+    border: 1px solid rgba(139,26,26,0.2);
+    padding: 0.4rem 1rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    background: var(--crimson); color: #fff; border-color: var(--crimson);
+  }
+
+  .gallery-section { padding: 4rem 2rem; }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .gallery-item {
+    position: relative; overflow: hidden;
+    cursor: pointer;
+    background: var(--dark);
+    aspect-ratio: 4/3;
+  }
+  .gallery-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+    display: block;
+  }
+  .gallery-item:hover img { transform: scale(1.07); }
+  .gallery-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(13,13,13,0.85) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.4s;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 1.5rem;
+  }
+  .gallery-item:hover .gallery-overlay { opacity: 1; }
+  .gallery-item-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem; font-weight: 700;
+    color: #fff; margin-bottom: 0.3rem;
+    letter-spacing: 0.05em;
+  }
+  .gallery-item-cat {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem; color: var(--gold);
+    letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .gallery-item-placeholder {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.2);
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 1rem;
+  }
+  .gallery-item-placeholder .ph-icon { font-size: 2rem; opacity: 0.4; }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.92);
+    display: none; align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox-img { max-width: 80vw; max-height: 80vh; object-fit: contain; }
+  .lightbox-info { text-align: center; margin-top: 1rem; }
+  .lightbox-title { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--gold-light); }
+  .lightbox-desc { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.95rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem; }
+  .lightbox-close {
+    position: absolute; top: 1.5rem; right: 2rem;
+    background: none; border: none; color: rgba(255,255,255,0.6);
+    font-size: 2rem; cursor: pointer; line-height: 1;
+    transition: color 0.3s;
+  }
+  .lightbox-close:hover { color: var(--gold-light); }
+  .lightbox-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.3);
+    color: var(--gold-light); font-size: 1.5rem;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background 0.3s;
+  }
+  .lightbox-nav:hover { background: rgba(212,175,55,0.3); }
+  .lightbox-prev { left: 1rem; }
+  .lightbox-next { right: 1rem; }
+
+  .empty-state {
+    text-align: center; padding: 5rem 2rem;
+    color: var(--text-light);
+  }
+  .empty-state .es-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+  .empty-state p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.1rem; }
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+
+<div class="page-hero">
+  <p class="page-hero-label">Our Moments</p>
+  <h1 class="page-hero-title">Ministry <span>Gallery</span></h1>
+  <div class="gold-line"></div>
+  <p class="page-hero-sub">Capturing the work of God through our activities and fellowship</p>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span style="font-family:'Cinzel',serif;font-size:0.6rem;color:var(--text-light);letter-spacing:0.15em;text-transform:uppercase;margin-right:0.5rem">Filter:</span>
+    <button class="filter-btn active" onclick="filterGallery('all', this)">All</button>
+    <button class="filter-btn" onclick="filterGallery('worship', this)">Worship</button>
+    <button class="filter-btn" onclick="filterGallery('teaching', this)">Teaching</button>
+    <button class="filter-btn" onclick="filterGallery('outreach', this)">Outreach</button>
+    <button class="filter-btn" onclick="filterGallery('fellowship', this)">Fellowship</button>
+    <button class="filter-btn" onclick="filterGallery('events', this)">Events</button>
+  </div>
+</div>
+
+<section class="gallery-section">
+  <div class="container">
+    <div class="gallery-grid" id="gallery-grid">
+      <!-- Populated by JS -->
+    </div>
+    <div id="gallery-empty" class="empty-state" style="display:none">
+      <div class="es-icon">🖼</div>
+      <p>No photos in this category yet.<br>Check back soon or explore another category.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <button class="lightbox-nav lightbox-prev" onclick="navLightbox(-1)">‹</button>
+  <div style="max-width:80vw;text-align:center">
+    <img class="lightbox-img" id="lb-img" src="" alt="">
+    <div class="lightbox-info">
+      <div class="lightbox-title" id="lb-title"></div>
+      <div class="lightbox-desc" id="lb-desc"></div>
+    </div>
+  </div>
+  <button class="lightbox-nav lightbox-next" onclick="navLightbox(1)">›</button>
+</div>
+
+<footer>
+  <div class="footer-logo">Rhema Ministries Embassy</div>
+  <div class="footer-tag">"Equipping The Saints For The Work Of The Ministry..." — Ephesians 4:12</div>
+  <div class="footer-copy">© 2026 Rhema Ministries Embassy · Nakuru, Kenya</div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+  initNav('gallery');
+
+  let currentFilter = 'all';
+  let lightboxItems = [];
+  let lightboxIndex = 0;
+
+  function renderGallery() {
+    const items = getGallery();
+    const filtered = currentFilter === 'all' ? items : items.filter(i => i.category === currentFilter);
+    const grid = document.getElementById('gallery-grid');
+    const empty = document.getElementById('gallery-empty');
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    lightboxItems = filtered;
+
+    grid.innerHTML = filtered.map((item, idx) => `
+      <div class="gallery-item reveal" onclick="openLightbox(${idx})">
+        ${item.url
+          ? `<img src="${item.url}" alt="${item.title}" onerror="this.parentElement.querySelector('.gallery-item-placeholder').style.display='flex'; this.style.display='none'">`
+          : ''}
+        <div class="gallery-item-placeholder" style="${item.url ? 'display:none' : 'display:flex'}">
+          <span class="ph-icon">📷</span>
+          <span>${item.title}</span>
+        </div>
+        <div class="gallery-overlay">
+          <div class="gallery-item-title">${item.title}</div>
+          <div class="gallery-item-cat">${item.category}</div>
+        </div>
+      </div>
+    `).join('');
+
+    initReveal();
+  }
+
+  function filterGallery(cat, btn) {
+    currentFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGallery();
+  }
+
+  function openLightbox(idx) {
+    lightboxIndex = idx;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function updateLightbox() {
+    const item = lightboxItems[lightboxIndex];
+    if (!item) return;
+    const img = document.getElementById('lb-img');
+    img.src = item.url || '';
+    img.style.display = item.url ? 'block' : 'none';
+    document.getElementById('lb-title').textContent = item.title;
+    document.getElementById('lb-desc').textContent = item.description || '';
+  }
+
+  function navLightbox(dir) {
+    lightboxIndex = (lightboxIndex + dir + lightboxItems.length) % lightboxItems.length;
+    updateLightbox();
+  }
+
+  function closeLightbox(e) {
+    if (e && e.target !== e.currentTarget && !e.target.classList.contains('lightbox-close')) return;
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Keyboard nav
+  document.addEventListener('keydown', e => {
+    const lb = document.getElementById('lightbox');
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft') navLightbox(-1);
+    if (e.key === 'ArrowRight') navLightbox(1);
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderGallery();
+  });
+</script>
+</body>
+</html>

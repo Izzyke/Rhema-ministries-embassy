@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resources — Rhema Ministries Embassy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Cinzel:wght@400;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .resources-section { padding: 4rem 2rem 6rem; }
+
+  .resource-tabs {
+    display: flex; gap: 0; border-bottom: 2px solid rgba(139,26,26,0.1);
+    margin-bottom: 3rem;
+  }
+  .resource-tab {
+    background: none; border: none;
+    padding: 1rem 2rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .resource-tab.active {
+    color: var(--crimson);
+    border-bottom-color: var(--crimson);
+  }
+  .resource-tab:hover { color: var(--text); }
+  .resource-tab .tab-icon { font-size: 1rem; }
+  .resource-tab .tab-count {
+    background: rgba(139,26,26,0.1);
+    color: var(--crimson);
+    font-size: 0.55rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 20px;
+  }
+
+  .resource-panel { display: none; }
+  .resource-panel.active { display: block; }
+
+  /* PDF cards */
+  .pdf-list { display: flex; flex-direction: column; gap: 1rem; }
+  .pdf-card {
+    background: #fff;
+    border: 1px solid rgba(139,26,26,0.1);
+    padding: 1.5rem;
+    display: flex; align-items: center; gap: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .pdf-card:hover { transform: translateX(4px); box-shadow: -4px 0 0 var(--crimson), 4px 4px 20px rgba(0,0,0,0.08); }
+  .pdf-icon {
+    width: 52px; height: 60px;
+    background: rgba(139,26,26,0.08);
+    border: 1px solid rgba(139,26,26,0.2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.6rem;
+  }
+  .pdf-info { flex: 1; min-width: 0; }
+  .pdf-title { font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700; color: var(--dark); margin-bottom: 0.3rem; }
+  .pdf-desc { font-size: 0.82rem; color: var(--text-light); line-height: 1.5; margin-bottom: 0.5rem; }
+  .pdf-meta { font-size: 0.72rem; color: rgba(0,0,0,0.35); display: flex; gap: 1rem; flex-wrap: wrap; }
+  .pdf-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+  .btn-sm {
+    background: none; border: 1px solid rgba(139,26,26,0.3);
+    padding: 0.45rem 1rem;
+    font-family: 'Cinzel', serif; font-size: 0.58rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--crimson); cursor: pointer; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    transition: all 0.3s;
+  }
+  .btn-sm:hover { background: var(--crimson); color: #fff; border-color: var(--crimson); }
+
+  /* Audio cards */
+  .audio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+  .audio-card {
+    background: var(--dark);
+    border: 1px solid rgba(212,175,55,0.12);
+    padding: 1.5rem;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .audio-card:hover { border-color: rgba(212,175,55,0.35); transform: translateY(-2px); }
+  .audio-waveform {
+    height: 40px; margin: 1rem 0 0.5rem;
+    display: flex; align-items: center; gap: 2px;
+  }
+  .audio-waveform span {
+    display: block; width: 3px;
+    background: rgba(212,175,55,0.3);
+    border-radius: 2px;
+    animation: wave 1.2s ease-in-out infinite;
+  }
+  .audio-waveform.playing span { background: var(--gold); }
+  @keyframes wave {
+    0%, 100% { height: 6px; }
+    50% { height: 30px; }
+  }
+  .audio-waveform span:nth-child(2n) { animation-delay: 0.1s; }
+  .audio-waveform span:nth-child(3n) { animation-delay: 0.2s; }
+  .audio-title { font-family: 'Cinzel', serif; font-size: 0.88rem; color: #fff; margin-bottom: 0.3rem; }
+  .audio-speaker { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem; }
+  .audio-controls { display: flex; align-items: center; gap: 0.75rem; }
+  .play-btn {
+    width: 36px; height: 36px;
+    background: var(--gold);
+    border: none; border-radius: 50%;
+    color: var(--dark); font-size: 0.9rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .play-btn:hover { transform: scale(1.1); }
+  .audio-duration { font-size: 0.75rem; color: rgba(255,255,255,0.35); font-family: 'Lato', sans-serif; }
+  audio { display: none; }
+
+  /* Video grid */
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+  .video-card { background: var(--dark); overflow: hidden; transition: transform 0.3s; }
+  .video-card:hover { transform: translateY(-3px); }
+  .video-thumb {
+    width: 100%; aspect-ratio: 16/9;
+    background: rgba(212,175,55,0.05);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .video-thumb iframe, .video-thumb video { width: 100%; height: 100%; border: 0; }
+  .video-thumb-placeholder {
+    width: 100%; height: 100%; position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.5rem; color: rgba(255,255,255,0.2);
+    font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .video-play-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background 0.3s;
+  }
+  .video-play-overlay:hover { background: rgba(0,0,0,0.5); }
+  .video-play-circle {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: rgba(212,175,55,0.85);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; color: var(--dark);
+  }
+  .video-info { padding: 1.25rem; }
+  .video-title { font-family: 'Cinzel', serif; font-size: 0.85rem; color: #fff; margin-bottom: 0.3rem; }
+  .video-meta { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+
+  .empty-state { text-align: center; padding: 5rem 2rem; color: var(--text-light); }
+  .empty-state .es-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+  .empty-state p { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.1rem; }
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+
+<div class="page-hero">
+  <p class="page-hero-label">Kingdom Resources</p>
+  <h1 class="page-hero-title">Teaching <span>Library</span></h1>
+  <div class="gold-line"></div>
+  <p class="page-hero-sub">Sermons, study materials, and media to equip your faith journey</p>
+</div>
+
+<section class="resources-section">
+  <div class="container">
+    <div class="resource-tabs">
+      <button class="resource-tab active" onclick="showResourceTab('pdf', this)">
+        <span class="tab-icon">📄</span> Documents & PDFs
+        <span class="tab-count" id="pdf-count">0</span>
+      </button>
+      <button class="resource-tab" onclick="showResourceTab('audio', this)">
+        <span class="tab-icon">🎵</span> Audio Sermons
+        <span class="tab-count" id="audio-count">0</span>
+      </button>
+      <button class="resource-tab" onclick="showResourceTab('video', this)">
+        <span class="tab-icon">🎬</span> Video Messages
+        <span class="tab-count" id="video-count">0</span>
+      </button>
+    </div>
+
+    <!-- PDFs -->
+    <div class="resource-panel active" id="panel-pdf">
+      <div class="pdf-list" id="pdf-list"></div>
+      <div id="pdf-empty" class="empty-state" style="display:none">
+        <div class="es-icon">📄</div>
+        <p>No documents uploaded yet. Check back soon.</p>
+      </div>
+    </div>
+
+    <!-- Audio -->
+    <div class="resource-panel" id="panel-audio">
+      <div class="audio-grid" id="audio-grid"></div>
+      <div id="audio-empty" class="empty-state" style="display:none">
+        <div class="es-icon">🎵</div>
+        <p>No audio sermons uploaded yet. Check back soon.</p>
+      </div>
+    </div>
+
+    <!-- Video -->
+    <div class="resource-panel" id="panel-video">
+      <div class="video-grid" id="video-grid"></div>
+      <div id="video-empty" class="empty-state" style="display:none">
+        <div class="es-icon">🎬</div>
+        <p>No video messages uploaded yet. Check back soon.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Rhema Ministries Embassy</div>
+  <div class="footer-tag">"Equipping The Saints For The Work Of The Ministry..." — Ephesians 4:12</div>
+  <div class="footer-copy">© 2026 Rhema Ministries Embassy · Nakuru, Kenya</div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+  initNav('resources');
+
+  function showResourceTab(type, btn) {
+    document.querySelectorAll('.resource-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.resource-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + type).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function renderResources() {
+    const resources = getResources();
+    const pdfs = resources.filter(r => r.type === 'pdf');
+    const audios = resources.filter(r => r.type === 'audio');
+    const videos = resources.filter(r => r.type === 'video');
+
+    document.getElementById('pdf-count').textContent = pdfs.length;
+    document.getElementById('audio-count').textContent = audios.length;
+    document.getElementById('video-count').textContent = videos.length;
+
+    // PDFs
+    const pdfList = document.getElementById('pdf-list');
+    if (pdfs.length === 0) {
+      pdfList.innerHTML = '';
+      document.getElementById('pdf-empty').style.display = 'block';
+    } else {
+      document.getElementById('pdf-empty').style.display = 'none';
+      pdfList.innerHTML = pdfs.map(r => `
+        <div class="pdf-card">
+          <div class="pdf-icon">📄</div>
+          <div class="pdf-info">
+            <div class="pdf-title">${r.title}</div>
+            <div class="pdf-desc">${r.description || 'Teaching document'}</div>
+            <div class="pdf-meta">
+              <span>📅 ${fmtDate(r.date)}</span>
+              ${r.author ? `<span>✍️ ${r.author}</span>` : ''}
+              ${r.size ? `<span>📦 ${r.size}</span>` : ''}
+            </div>
+          </div>
+          <div class="pdf-actions">
+            ${r.url ? `<a class="btn-sm" href="${r.url}" target="_blank">👁 View</a>` : ''}
+            ${r.url ? `<a class="btn-sm" href="${r.url}" download>⬇ Download</a>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Audio
+    const audioGrid = document.getElementById('audio-grid');
+    if (audios.length === 0) {
+      audioGrid.innerHTML = '';
+      document.getElementById('audio-empty').style.display = 'block';
+    } else {
+      document.getElementById('audio-empty').style.display = 'none';
+      audioGrid.innerHTML = audios.map((r, i) => `
+        <div class="audio-card" id="audio-card-${i}">
+          <div class="audio-title">${r.title}</div>
+          <div class="audio-speaker">${r.author || 'Rhema Ministries Embassy'}</div>
+          <div class="audio-waveform" id="wave-${i}">
+            ${Array.from({length: 16}, (_, j) => `<span style="animation-delay:${j*0.075}s;height:${6 + Math.random()*14}px"></span>`).join('')}
+          </div>
+          ${r.url ? `<audio id="aud-${i}" src="${r.url}" preload="none"></audio>` : ''}
+          <div class="audio-controls">
+            <button class="play-btn" onclick="toggleAudio(${i})" id="play-btn-${i}">▶</button>
+            <div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);margin-bottom:0.2rem">${r.description || 'Audio sermon'}</div>
+              <div class="audio-duration">📅 ${fmtDate(r.date)}</div>
+            </div>
+            ${r.url ? `<a href="${r.url}" download class="btn-sm" style="margin-left:auto">⬇</a>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Video
+    const videoGrid = document.getElementById('video-grid');
+    if (videos.length === 0) {
+      videoGrid.innerHTML = '';
+      document.getElementById('video-empty').style.display = 'block';
+    } else {
+      document.getElementById('video-empty').style.display = 'none';
+      videoGrid.innerHTML = videos.map(r => {
+        const embedUrl = getEmbedUrl(r.url);
+        return `
+          <div class="video-card">
+            <div class="video-thumb">
+              ${embedUrl
+                ? `<iframe src="${embedUrl}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`
+                : `<div class="video-thumb-placeholder"><span style="font-size:2.5rem">🎬</span><span>${r.title}</span></div>`
+              }
+            </div>
+            <div class="video-info">
+              <div class="video-title">${r.title}</div>
+              <div class="video-meta">📅 ${fmtDate(r.date)}${r.author ? ' · ' + r.author : ''}</div>
+              ${r.description ? `<div style="font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:0.4rem">${r.description}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  function getEmbedUrl(url) {
+    if (!url) return '';
+    // YouTube
+    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+    if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+    // Vimeo
+    const viMatch = url.match(/vimeo\.com\/(\d+)/);
+    if (viMatch) return `https://player.vimeo.com/video/${viMatch[1]}`;
+    return url;
+  }
+
+  let currentAudio = null;
+  let currentAudioIdx = -1;
+  function toggleAudio(idx) {
+    const audio = document.getElementById(`aud-${idx}`);
+    const btn = document.getElementById(`play-btn-${idx}`);
+    const wave = document.getElementById(`wave-${idx}`);
+    if (!audio) return;
+
+    if (currentAudio && currentAudio !== audio) {
+      currentAudio.pause();
+      document.getElementById(`play-btn-${currentAudioIdx}`).textContent = '▶';
+      document.getElementById(`wave-${currentAudioIdx}`).classList.remove('playing');
+    }
+
+    if (audio.paused) {
+      audio.play();
+      btn.textContent = '⏸';
+      wave.classList.add('playing');
+      currentAudio = audio;
+      currentAudioIdx = idx;
+    } else {
+      audio.pause();
+      btn.textContent = '▶';
+      wave.classList.remove('playing');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', renderResources);
+</script>
+</body>
+</html>
