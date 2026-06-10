@@ -31,6 +31,7 @@
     color: var(--text-light);
     cursor: pointer;
     transition: all 0.3s;
+    border-radius: 20px;
   }
   .filter-btn.active, .filter-btn:hover {
     background: var(--crimson); color: #fff; border-color: var(--crimson);
@@ -184,8 +185,6 @@
 
 <script src="shared.js"></script>
 <script>
-  initNav('gallery');
-
   let currentFilter = 'all';
   let lightboxItems = [];
   let lightboxIndex = 0;
@@ -268,7 +267,9 @@
   });
 
   document.addEventListener('DOMContentLoaded', () => {
+    initNav('gallery');
     renderGallery();
+    setTimeout(() => document.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible')), 600);
   });
 </script>
 </body>
